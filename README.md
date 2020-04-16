@@ -12,6 +12,7 @@
 * `frontail /var/log/syslog`
 * visit [http://127.0.0.1:9001](http://127.0.0.1:9001)
 
+
 ## Features
 
 * log rotation (not on windows!)
@@ -29,6 +30,7 @@
 ## Installation options
 
 * download a binary file from [Releases](https://github.com/mthenw/frontail/releases) page (currently `frontail` doesn't work on Windows)
+* using binary file in background process: `nohup ./frontail /log/syslog &`
 * using [npm package](https://www.npmjs.com/package/frontail): `npm i frontail -g`
 * using [Docker image](https://cloud.docker.com/repository/docker/mthenw/frontail): `docker run -d -P -v /var/log:/log mthenw/frontail /log/syslog`
 
@@ -96,11 +98,29 @@ Available presets:
 - npmlog
 - python
 
-### Running behind nginx
+### Running behind Proxy Reverse
 
 Using the `--url-path` option `frontail` can run behind nginx with the example configuration
 
 Using `frontail` with `--url-path /frontail`
+
+**Apache**
+
+```
+<VirtualHost *:80>
+  ServerName localhost
+  <Proxy *>
+     Order allow,deny
+     Allow from all
+   </Proxy>
+   ProxyPass /frontail http://127.0.0.1:9001/frontail
+   ProxyPassReverse /frontail http://127.0.0.1:9001/frontail
+   ProxyPreserveHost On
+</VirtualHost>
+
+```
+
+**Nginx
 
 ```
 events {
